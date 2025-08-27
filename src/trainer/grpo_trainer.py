@@ -777,16 +777,28 @@ class Qwen2VLGRPOTrainer(Trainer):
 
         model_card.save(os.path.join(self.args.output_dir, "README.md"))
 
-    def _get_train_sampler(self) -> Sampler:
-        """Returns a sampler that ensures proper data sampling for GRPO training."""
+    def _get_train_sampler(self, dataset: Optional[Dataset] = None) -> Sampler:
+        """Returns a sampler that ensures proper data sampling for GRPO training.
+
+        HF Trainer (>=4.42) calls this with the dataset as an arg. We accept it,
+        but keep the original behavior using RepeatRandomSampler.
+        """
+        ds = dataset if dataset is not None else self.train_dataset
+        assert ds is not None, "train dataset is not set"
+
+        # Keep your original effective batch size logic, but be tolerant to APIs:
+        # prefer accelerator.num_processes if present; else fall back to args.world_size.
+        num_procs = getattr(self, "accelerator", None)
+        num_procs = getattr(num_procs, "num_processes", None) or getattr(self.args, "world_size", 1)
+
         effective_batch_size = (
             self.args.per_device_train_batch_size
-            * self.accelerator.num_processes
+            * num_procs
             * self.args.gradient_accumulation_steps
         )
-        
+
         return RepeatRandomSampler(
-            data_source=self.train_dataset,
+            data_source=ds,
             mini_repeat_count=self.num_generations,
             batch_size=effective_batch_size // self.num_generations,
             repeat_count=self.num_iterations,

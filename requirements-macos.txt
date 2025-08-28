@@ -1,0 +1,53 @@
+# macOS-specific requirements for GTA1 project
+# Use this file if you encounter issues with the main requirements.txt on macOS
+
+# Core ML/AI libraries (macOS optimized)
+torch
+torchvision  
+torchaudio
+transformers>=4.44
+accelerate>=0.33
+datasets
+peft>=0.11
+trl>=0.14,<0.15
+
+# Note: bitsandbytes and liger-kernel may not work on macOS
+# Commented out problematic packages:
+# bitsandbytes  # Not available on macOS
+# liger-kernel  # May have compatibility issues
+
+# Computer Vision
+pillow
+opencv-python
+# opencv-python-headless  # May conflict on macOS, use regular opencv-python
+
+# Data processing and utilities
+numpy
+pandas
+tqdm
+matplotlib
+seaborn
+scikit-learn
+packaging
+pyyaml
+
+# Text processing
+sentencepiece
+protobuf
+
+# Object detection and supervision
+ultralytics==8.3.70
+supervision==0.18.0
+
+# OCR and image processing
+easyocr
+einops==0.8.0
+timm
+
+# Utilities
+fire
+joblib
+imagesize
+
+# Development and misc
+# glob2  # Built into Python 3.5+

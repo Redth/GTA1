@@ -1,0 +1,52 @@
+# GTA1 Project Requirements
+# Main dependencies for the GTA1 vision-language model training
+
+# Core ML/AI libraries
+# NOTE: PyTorch installation varies by platform:
+# - Linux/WSL2: Use CUDA version (install with setup script)
+# - macOS: Use default PyTorch (CPU/MPS support)
+torch
+torchvision
+transformers>=4.44
+accelerate>=0.33
+datasets
+peft>=0.11
+trl>=0.14,<0.15
+bitsandbytes
+liger-kernel
+
+# Computer Vision
+pillow
+opencv-python
+opencv-python-headless
+
+# Data processing and utilities
+numpy
+pandas
+tqdm
+matplotlib
+seaborn
+scikit-learn
+packaging
+pyyaml
+
+# Text processing
+sentencepiece
+protobuf
+
+# Object detection and supervision
+ultralytics==8.3.70
+supervision==0.18.0
+
+# OCR and image processing
+easyocr
+einops==0.8.0
+timm
+
+# Utilities
+fire
+joblib
+imagesize
+
+# Development and misc
+glob2

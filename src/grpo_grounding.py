@@ -42,7 +42,14 @@ import random
 import math
 from qwen_vl_utils import smart_resize
 from transformers import AutoProcessor
-from liger_kernel.transformers import apply_liger_kernel_to_qwen2_5_vl
+
+# Optional liger_kernel import (may not be available on all platforms)
+try:
+    from liger_kernel.transformers import apply_liger_kernel_to_qwen2_5_vl
+    LIGER_KERNEL_AVAILABLE = True
+except ImportError:
+    print("⚠️  liger_kernel not available - skipping kernel optimizations")
+    LIGER_KERNEL_AVAILABLE = False
 
 @dataclass
 class GRPOScriptArguments(ScriptArguments):
@@ -215,7 +222,12 @@ def main(script_args, training_args, model_args):
     dataset = LazySupervisedDataset(script_args.dataset_name, script_args, processing_class)
     trainer_cls = Qwen2VLGRPOTrainer
 
-    apply_liger_kernel_to_qwen2_5_vl(fused_linear_cross_entropy=False)
+    # Apply liger kernel optimizations if available
+    if LIGER_KERNEL_AVAILABLE:
+        print("🚀 Applying liger kernel optimizations...")
+        apply_liger_kernel_to_qwen2_5_vl(fused_linear_cross_entropy=False)
+    else:
+        print("⚠️  Liger kernel optimizations skipped (not available on this platform)")
 
     # Initialize the GRPO trainer
     trainer = trainer_cls(
